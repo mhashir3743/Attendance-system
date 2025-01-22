@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Attendance Records</title>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        .filter-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .filter-section input {
+            display: inline-block;
+            margin-right: 10px;
+            width: auto;
+        }
+        
+        .filter-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Attendance Records</h1>
+        
+        <div class="filter-section">
+            <input type="date" id="startDate">
+            <input type="date" id="endDate">
+            <button class="filter-button" onclick="filterRecords()">Filter</button>
+            <button class="filter-button" onclick="window.location.href='/'">Back to Main</button>
+        </div>
+
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="attendanceBody">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function loadAttendanceData() {
+            try {
+                const response = await fetch('/api/attendance');
+                const records = await response.json();
+                displayRecords(records);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function displayRecords(records) {
+            const tbody = document.getElementById('attendanceBody');
+            tbody.innerHTML = '';
+
+            records.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.employeeId}</td>
+                    <td>${record.employeeName}</td>
+                    <td>${record.date}</td>
+                    <td>${record.checkIn}</td>
+                    <td>${record.checkOut || '-'}</td>
+                    <td>${record.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function filterRecords() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            fetch(`/api/attendance/filter?startDate=${startDate}&endDate=${endDate}`)
+                .then(response => response.json())
+                .then(records => displayRecords(records))
+                .catch(error => console.error('Error filtering records:', error));
+        }
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadAttendanceData);
+    </script>
+</body>
+</html> 

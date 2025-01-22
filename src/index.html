@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesForce Attendance System</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="toast-container"></div>
+    <div class="container">
+        <h1>Attendance System</h1>
+        
+        <div class="attendance-form">
+            <h2>Mark Attendance</h2>
+            <input type="text" id="employeeId" placeholder="Employee ID" pattern="[0-9]*" inputmode="numeric">
+            <input type="text" id="employeeName" placeholder="Employee Name">
+            <div class="button-group">
+                <button id="checkIn">Check In</button>
+                <button id="checkOut">Check Out</button>
+            </div>
+        </div>
+
+        <div class="attendance-list">
+            <h2>Today's Attendance</h2>
+            <table id="attendanceTable">
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Name</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceBody">
+                </tbody>
+            </table>
+        </div>
+
+        <button id="exportExcel">Export to Excel</button>
+    </div>
+    <script>
+        console.log('HTML document loaded');
+    </script>
+    <script src="/app.js" type="module"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM Content Loaded');
+            if (window.initApp) {
+                window.initApp();
+            } else {
+                console.error('initApp not found');
+            }
+        });
+    </script>
+</body>
+</html> 
